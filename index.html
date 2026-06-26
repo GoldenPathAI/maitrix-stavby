@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>[MAITRIX] Stavby - AI agenti pro stavební firmy</title>
+<meta name="description" content="AI agenti pro stavební firmy. Od odkazu na zakázku po fakturu. Vytěžování dokumentů, CRM, stavební deník a fakturace, česky a podle českých pravidel." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#09090b; --bg2:#0d0d11; --panel:#101016; --panel2:#15151c;
+    --line:rgba(236,234,227,.10); --line2:rgba(236,234,227,.20);
+    --ink:#eceae3; --paper:#f4f1ea; --graphite:#8c8c93; --dim:#5f5f66;
+    --signal:#f5392d; --signal-soft:#ff6f63; --signal-deep:#c32a20;
+    --mono:'JetBrains Mono',ui-monospace,monospace; --sans:'Inter',system-ui,sans-serif;
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;background:var(--bg)}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--signal);color:var(--paper)}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  .signal{color:var(--signal)}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--graphite)}
+  .eyebrow b{color:var(--signal);font-weight:500}
+  h1,h2,h3{font-weight:800;letter-spacing:-.03em;line-height:1.05}
+  section{padding:104px 0;border-top:1px solid var(--line);position:relative}
+  .lead{color:var(--graphite);font-size:18px;max-width:640px;letter-spacing:-.01em}
+  .muted{color:var(--graphite)}
+  .dim{color:var(--dim)}
+  .mono{font-family:var(--mono)}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+  /* header */
+  header{position:sticky;top:0;z-index:60;background:rgba(9,9,11,.72);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .logo{font-family:var(--mono);font-weight:700;font-size:18px;letter-spacing:-.05em;display:flex;align-items:baseline;gap:10px}
+  .logo .br{color:var(--signal)}
+  .logo small{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--graphite)}
+  .navlinks{display:flex;gap:30px;align-items:center}
+  .navlinks a{font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;color:var(--graphite);transition:color .15s}
+  .navlinks a:hover{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.02em;padding:12px 20px;transition:all .18s;cursor:pointer;border:1px solid transparent;text-transform:uppercase}
+  .btn-primary{background:var(--signal);color:var(--paper)}
+  .btn-primary:hover{background:var(--signal-soft);box-shadow:0 0 30px rgba(245,57,45,.4)}
+  .btn-ghost{border-color:var(--line2);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--signal);color:var(--signal)}
+  .nav .btn{padding:10px 18px}
+  .menu-btn{display:none;background:none;border:none;color:var(--ink);font-size:22px;cursor:pointer;font-family:var(--mono)}
+
+  /* hero */
+  .hero{position:relative;padding:96px 0 84px;overflow:hidden;border-top:none;min-height:90vh;display:flex;align-items:center}
+  #shader{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.92;-webkit-mask-image:linear-gradient(to bottom,#000 50%,transparent 100%);mask-image:linear-gradient(to bottom,#000 50%,transparent 100%)}
+  .hero .wrap{position:relative;z-index:2;width:100%}
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+  .hero h1{font-size:clamp(42px,5.6vw,72px);max-width:14ch;text-wrap:balance}
+  .hero h1 .signal{text-shadow:0 0 44px rgba(245,57,45,.45)}
+  .hero .lead{margin-top:24px;font-size:19px;color:var(--ink);opacity:.86}
+  .hero-cta{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap}
+  .hero-chip{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--graphite);border:1px solid var(--line);padding:7px 13px;margin-bottom:22px}
+  .blink{width:7px;height:7px;border-radius:50%;background:var(--signal);box-shadow:0 0 12px var(--signal);animation:blink 1.6s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+  /* terminal */
+  .term{background:rgba(13,13,17,.82);border:1px solid var(--line2);backdrop-filter:blur(6px);font-family:var(--mono);font-size:13px;line-height:1.9}
+  .term-bar{display:flex;align-items:center;gap:7px;padding:11px 14px;border-bottom:1px solid var(--line)}
+  .term-bar .d{width:9px;height:9px;border-radius:50%;background:#2a2a31}
+  .term-bar .d.r{background:var(--signal)}
+  .term-bar span{margin-left:8px;font-size:11px;color:var(--dim);letter-spacing:.06em}
+  .term-body{padding:18px 16px;min-height:230px}
+  .term-line{color:var(--graphite);white-space:pre-wrap}
+  .term-line .ok{color:#3ecf8e}
+  .term-line .sg{color:var(--signal-soft)}
+  .term-line .pr{color:var(--dim)}
+  .cursor{display:inline-block;width:8px;height:15px;background:var(--signal);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+
+  /* marquee */
+  .marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;background:var(--bg2);padding:14px 0}
+  .marquee-track{display:flex;gap:0;white-space:nowrap;animation:scroll 38s linear infinite;width:max-content}
+  .marquee:hover .marquee-track{animation-play-state:paused}
+  .marquee-track span{font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--graphite);padding:0 26px;display:inline-flex;align-items:center;gap:26px}
+  .marquee-track span::after{content:"";width:5px;height:5px;background:var(--signal);border-radius:50%}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  .head{max-width:700px}
+  .head h2{font-size:clamp(30px,4.2vw,48px);margin-top:14px}
+  .head .lead{margin-top:18px}
+  .idx{font-family:var(--mono);font-size:12px;color:var(--signal);letter-spacing:.1em}
+
+  /* pains */
+  .pains{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:46px;border:1px solid var(--line)}
+  .pain{padding:26px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;gap:14px;transition:background .2s}
+  .pain:hover{background:var(--panel)}
+  .pain .x{font-family:var(--mono);color:var(--signal);flex-shrink:0}
+  .pain div{font-size:14.5px;color:var(--ink);opacity:.82}
+
+  /* steps */
+  .steps{display:grid;grid-template-columns:repeat(5,1fr);margin-top:46px;border:1px solid var(--line)}
+  .step{padding:28px 22px;border-right:1px solid var(--line);transition:background .2s}
+  .step:last-child{border-right:none}
+  .step:hover{background:var(--panel)}
+  .step .n{font-family:var(--mono);font-weight:700;color:var(--signal);font-size:13px}
+  .step h3{font-size:16.5px;margin:14px 0 9px;font-weight:700}
+  .step p{font-size:13px;color:var(--graphite);line-height:1.55}
+  .wedge-note{margin-top:26px;font-family:var(--mono);font-size:13px;color:var(--graphite);display:flex;gap:12px;align-items:flex-start}
+  .wedge-note b{color:var(--signal);font-weight:500}
+
+  /* modules */
+  .grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:0;margin-top:46px;border:1px solid var(--line)}
+  .mod{padding:32px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);transition:background .2s}
+  .mod:nth-child(2n){border-right:none}
+  .mod:nth-last-child(-n+2){border-bottom:none}
+  .mod:hover{background:var(--panel)}
+  .mod .tag{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--signal)}
+  .mod h3{font-size:22px;margin:12px 0 8px;font-weight:700}
+  .mod ul{list-style:none;margin-top:16px;display:flex;flex-direction:column;gap:9px}
+  .mod li{font-size:14.5px;color:var(--graphite);padding-left:18px;position:relative}
+  .mod li::before{content:"—";position:absolute;left:0;color:var(--signal-deep)}
+
+  /* agents */
+  .agcols{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:46px;border:1px solid var(--line)}
+  .agcol{padding:26px;border-right:1px solid var(--line)}
+  .agcol:last-child{border-right:none}
+  .agcol > .tag{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:18px}
+  .ag{display:flex;align-items:flex-start;gap:11px;padding:13px 0;border-top:1px solid var(--line)}
+  .ag:first-of-type{border-top:none}
+  .ag .nm{font-size:14.5px;font-weight:600}
+  .ag .ds{font-size:12.5px;color:var(--dim);margin-top:3px;line-height:1.45}
+  .pill{font-family:var(--mono);font-size:9.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;flex-shrink:0;margin-top:2px}
+  .pill.mvp{background:var(--signal);color:var(--paper)}
+  .pill.addon{border:1px solid var(--line2);color:var(--graphite)}
+  .leg{display:flex;gap:22px;margin-top:24px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--graphite)}
+  .leg span{display:inline-flex;align-items:center;gap:8px}
+  .sw{width:11px;height:11px}
+
+  /* value */
+  .valgrid{display:grid;grid-template-columns:1.15fr 1fr;gap:44px;margin-top:46px;align-items:start}
+  .bars{display:flex;flex-direction:column;gap:17px}
+  .bar-row{display:grid;grid-template-columns:158px 1fr auto;gap:16px;align-items:center;font-size:13.5px}
+  .bar-row .lbl{color:var(--graphite);text-align:right;font-family:var(--mono);font-size:12px}
+  .bar-track{height:24px;background:var(--panel2);overflow:hidden}
+  .bar-fill{height:100%;width:0;transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+  .in .bar-fill{width:var(--w)}
+  .bar-fill.a{background:var(--signal)}
+  .bar-fill.b{background:#6d6d76}
+  .bar-fill.c{background:#33333b}
+  .bar-row .val{font-family:var(--mono);font-size:12px;color:var(--dim);white-space:nowrap}
+  .barleg{display:flex;gap:18px;margin-top:18px;font-family:var(--mono);font-size:11px;color:var(--dim);flex-wrap:wrap}
+  .macro{border:1px solid var(--line);padding:6px 28px}
+  .macro .stat{display:flex;gap:18px;align-items:baseline;padding:20px 0;border-top:1px solid var(--line)}
+  .macro .stat:first-of-type{border-top:none}
+  .macro .big{font-family:var(--mono);font-weight:700;font-size:30px;color:var(--signal);min-width:96px;font-feature-settings:"tnum" 1}
+  .macro .st-l{font-size:13.5px;color:var(--graphite)}
+  .honest{margin-top:26px;font-family:var(--mono);font-size:11.5px;color:var(--dim);line-height:1.7;max-width:820px}
+
+  /* pricing */
+  .prices{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:46px;border:1px solid var(--line)}
+  .price{padding:30px 24px;border-right:1px solid var(--line);display:flex;flex-direction:column;position:relative;transition:background .2s}
+  .price:last-child{border-right:none}
+  .price:hover{background:var(--panel)}
+  .price.feat{background:var(--panel);outline:1px solid var(--signal);outline-offset:-1px}
+  .price .badge{position:absolute;top:0;right:0;background:var(--signal);color:var(--paper);font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px}
+  .price .pn{font-family:var(--mono);font-weight:700;font-size:17px;letter-spacing:.02em}
+  .price .pfor{font-size:12.5px;color:var(--dim);margin:7px 0 20px;min-height:32px}
+  .price .amt{font-size:13px;color:var(--graphite)}
+  .price .amt b{font-family:var(--mono);font-size:22px;color:var(--ink);font-weight:700;display:block;margin-top:3px}
+  .price .mo{font-size:12.5px;color:var(--graphite);margin-top:12px}
+  .price .mo b{font-family:var(--mono);color:var(--ink);font-weight:700}
+  .price ul{list-style:none;margin:20px 0;display:flex;flex-direction:column;gap:10px;flex:1}
+  .price li{font-size:13px;color:var(--graphite);padding-left:18px;position:relative}
+  .price li::before{content:"+";position:absolute;left:0;color:var(--signal);font-family:var(--mono)}
+  .price-note{margin-top:24px;font-family:var(--mono);font-size:12px;color:var(--dim)}
+
+  /* why */
+  .why{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:46px;border:1px solid var(--line)}
+  .wcard{padding:28px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .wcard:nth-child(3n){border-right:none}
+  .wcard:nth-last-child(-n+3){border-bottom:none}
+  .wcard h3{font-size:16px;margin-bottom:9px;font-weight:700;display:flex;align-items:center;gap:9px}
+  .wcard h3::before{content:"";width:6px;height:6px;background:var(--signal)}
+  .wcard p{font-size:14px;color:var(--graphite);line-height:1.55}
+
+  /* faq */
+  .faq{margin-top:42px;border-top:1px solid var(--line)}
+  .qa{border-bottom:1px solid var(--line)}
+  .qa button{width:100%;background:none;border:none;color:var(--ink);text-align:left;padding:24px 0;font-size:18px;font-weight:700;letter-spacing:-.02em;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px}
+  .qa .ic{font-family:var(--mono);color:var(--signal);font-size:20px;transition:transform .2s;flex-shrink:0}
+  .qa.open .ic{transform:rotate(45deg)}
+  .qa .a{max-height:0;overflow:hidden;transition:max-height .28s ease}
+  .qa .a p{padding:0 0 24px;color:var(--graphite);font-size:15px;max-width:780px}
+
+  /* cta */
+  .cta{text-align:center;border:1px solid var(--line2);padding:80px 24px;margin:104px 0;position:relative;overflow:hidden}
+  .cta::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 120%,rgba(245,57,45,.14),transparent 60%);pointer-events:none}
+  .cta h2{font-size:clamp(30px,4.4vw,52px);max-width:18ch;margin:0 auto;position:relative}
+  .cta .lead{margin:20px auto 0;position:relative}
+  .cta .hero-cta{justify-content:center;position:relative}
+
+  footer{border-top:1px solid var(--line);padding:54px 0 70px}
+  .foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-start}
+  .foot .muted{font-size:14px;max-width:420px;margin-top:14px}
+  .foot a{font-family:var(--mono);color:var(--graphite);font-size:13px}
+  .foot a:hover{color:var(--signal)}
+
+  /* chatbot */
+  .cbtn{position:fixed;bottom:26px;right:26px;z-index:80;background:var(--signal);color:var(--paper);border:none;width:60px;height:60px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 40px rgba(245,57,45,.4);transition:transform .2s}
+  .cbtn:hover{transform:scale(1.06)}
+  .cbtn svg{width:26px;height:26px}
+  .cpanel{position:fixed;bottom:100px;right:26px;z-index:80;width:380px;max-width:calc(100vw - 40px);height:560px;max-height:calc(100vh - 130px);background:var(--bg2);border:1px solid var(--line2);display:flex;flex-direction:column;opacity:0;transform:translateY(16px) scale(.98);pointer-events:none;transition:opacity .22s,transform .22s}
+  .cpanel.open{opacity:1;transform:none;pointer-events:auto}
+  .chead{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+  .chead .av{width:34px;height:34px;background:var(--signal);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;color:var(--paper);font-size:13px}
+  .chead .nm{font-weight:700;font-size:14px}
+  .chead .st{font-family:var(--mono);font-size:11px;color:#3ecf8e;display:flex;align-items:center;gap:6px}
+  .chead .st::before{content:"";width:6px;height:6px;border-radius:50%;background:#3ecf8e}
+  .chead .cx{margin-left:auto;background:none;border:none;color:var(--graphite);font-size:20px;cursor:pointer;font-family:var(--mono)}
+  .cbody{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px}
+  .msg{max-width:84%;padding:11px 14px;font-size:13.5px;line-height:1.5}
+  .msg.bot{background:var(--panel);border:1px solid var(--line);align-self:flex-start}
+  .msg.me{background:var(--signal);color:var(--paper);align-self:flex-end}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 18px 12px}
+  .chip{font-family:var(--mono);font-size:11.5px;color:var(--ink);border:1px solid var(--line2);background:transparent;padding:7px 11px;cursor:pointer;transition:all .15s}
+  .chip:hover{border-color:var(--signal);color:var(--signal)}
+  .cfoot{border-top:1px solid var(--line);padding:12px;display:flex;gap:8px}
+  .cfoot input{flex:1;background:var(--panel);border:1px solid var(--line);color:var(--ink);padding:11px 13px;font-family:var(--sans);font-size:13.5px;outline:none}
+  .cfoot input:focus{border-color:var(--signal)}
+  .cfoot button{background:var(--signal);border:none;color:var(--paper);padding:0 16px;cursor:pointer;font-family:var(--mono)}
+  .typing{display:flex;gap:4px;padding:13px 14px;background:var(--panel);border:1px solid var(--line);align-self:flex-start}
+  .typing i{width:6px;height:6px;background:var(--graphite);border-radius:50%;animation:td 1.2s infinite}
+  .typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+  @keyframes td{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+  @media(max-width:980px){
+    .navlinks{display:none}.menu-btn{display:block}
+    .hero-grid{grid-template-columns:1fr;gap:36px}.term{order:2}
+    .pains,.agcols,.why{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr 1fr}.grid4{grid-template-columns:1fr}
+    .prices{grid-template-columns:1fr 1fr}.valgrid{grid-template-columns:1fr}
+    .mod:nth-child(2n){border-right:1px solid var(--line)}
+    .pain,.wcard{border-right:1px solid var(--line)}
+  }
+  @media(max-width:600px){
+    section{padding:68px 0}.steps,.prices{grid-template-columns:1fr}
+    .bar-row{grid-template-columns:120px 1fr}.bar-row .val{grid-column:2}
+    .cpanel{right:12px;bottom:90px}.cbtn{right:18px;bottom:18px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a href="#" class="logo"><span><span class="br">[</span>MAITRIX<span class="br">]</span></span><small>Stavby</small></a>
+    <nav class="navlinks">
+      <a href="#problem">Problém</a>
+      <a href="#jak">Řešení</a>
+      <a href="#agenti">Agenti</a>
+      <a href="#hodnota">Hodnota</a>
+      <a href="#cenik">Ceník</a>
+      <a href="#kontakt" class="btn btn-primary">Konzultace</a>
+    </nav>
+    <button class="menu-btn" onclick="var n=document.querySelector('.navlinks');n.style.display=n.style.display==='flex'?'none':'flex';n.style.position='absolute';n.style.flexDirection='column';n.style.top='62px';n.style.right='28px';n.style.background='var(--bg2)';n.style.padding='16px 20px';n.style.border='1px solid var(--line)'">≡</button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <canvas id="shader"></canvas>
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-chip"><span class="blink"></span> AI agenti pro stavební firmy</div>
+        <h1>Méně rutiny<br><span class="signal">víc postavených zakázek</span></h1>
+        <p class="lead">Vložíte odkaz na zakázku. AI ji přečte, vytáhne data, označí rizika a založí v CRM. K tomu celá firma v jednom: zakázky, fakturace a stavební deník. Česky a podle českých pravidel.</p>
+        <div class="hero-cta">
+          <a href="#kontakt" class="btn btn-primary">Domluvit konzultaci →</a>
+          <a href="#jak" class="btn btn-ghost">Jak to funguje</a>
+        </div>
+      </div>
+      <div class="term">
+        <div class="term-bar"><span class="d r"></span><span class="d"></span><span class="d"></span><span>agent · zakázka → CRM</span></div>
+        <div class="term-body"><div class="term-line" id="termOut"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span>Vytěžování dokumentů</span><span>Zápis do CRM</span><span>Detekce rizik s citacemi</span><span>Stavební deník z fotek</span><span>Přenesená DPH</span><span>Výkaz výměr ÚRS a RTS</span><span>Monitoring NEN</span><span>Fakturace a zádržné</span>
+    <span>Vytěžování dokumentů</span><span>Zápis do CRM</span><span>Detekce rizik s citacemi</span><span>Stavební deník z fotek</span><span>Přenesená DPH</span><span>Výkaz výměr ÚRS a RTS</span><span>Monitoring NEN</span><span>Fakturace a zádržné</span>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="wrap">
+    <div class="head reveal">
+      <div class="eyebrow"><b>01</b> &nbsp;Kde stavební firmy ztrácí čas</div>
+      <h2>Většina práce dnes není stavění</h2>
+      <p class="lead">Malé a střední české stavební firmy nemají automatizované skoro nic. Čas mizí v opakované administrativě, ne na stavbě.</p>
+    </div>
+    <div class="pains reveal">
+      <div class="pain"><span class="x">→</span><div>Ruční přepisování ze smluv, poptávek a faktur do tabulek a systémů</div></div>
+      <div class="pain"><span class="x">→</span><div>Termíny, sankce a záruky schované v dlouhých dokumentech</div></div>
+      <div class="pain"><span class="x">→</span><div>Poptávky, co skončí v mailu nebo notesu a zapadnou</div></div>
+      <div class="pain"><span class="x">→</span><div>Deník a reporty psané večer z hlavy</div></div>
+      <div class="pain"><span class="x">→</span><div>Každý si vede zakázky po svém, nikdo nemá přehled</div></div>
+      <div class="pain"><span class="x">→</span><div>Chyby v přenesené DPH a zapomenuté zádržné</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- JAK -->
+<section id="jak">
+  <div class="wrap">
+    <div class="head reveal">
+      <div class="eyebrow"><b>02</b> &nbsp;Jádro, co nemá nikdo</div>
+      <h2>Od odkazu na zakázku po hotový deal v CRM</h2>
+      <p class="lead">Všichni ostatní začínají u ručního zadání zakázky. My začínáme o krok dřív, u odkazu. To, co děláme u Sportovních podlah Zlín, nikdo jiný v celém řetězci nedělá.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step"><div class="n">01</div><h3>Odkaz nebo dokument</h3><p>Vložíte odkaz na zakázku nebo nahrajete smlouvu, dokumentaci a přílohy.</p></div>
+      <div class="step"><div class="n">02</div><h3>Stažení</h3><p>Aplikace si sama stáhne všechny soubory, i ZIP a sken.</p></div>
+      <div class="step"><div class="n">03</div><h3>Vytěžení</h3><p>AI vytáhne data, u každého údaje míra jistoty a odkaz na stránku.</p></div>
+      <div class="step"><div class="n">04</div><h3>Kontrola rizik</h3><p>Označí rizikové pasáže podle vašich pravidel, s citací a doporučením.</p></div>
+      <div class="step"><div class="n">05</div><h3>Zápis do CRM</h3><p>Po schválení založí zakázku, kontakt a úkoly. Jen co potvrdíte.</p></div>
+    </div>
+    <p class="wedge-note reveal"><b>// nic autonomního</b><span>Do CRM ani účetnictví nejde nic bez vašeho schválení, u každého údaje vidíte zdroj. To je jádro důvěry, ne jen funkce.</span></p>
+  </div>
+</section>
+
+<!-- MODULY -->
+<section id="moduly">
+  <div class="wrap">
+    <div class="head reveal">
+      <div class="eyebrow"><b>03</b> &nbsp;Čtyři oblasti, jeden systém</div>
+      <h2>Celá firma na jednom místě</h2>
+      <p class="lead">Tři oblasti, jak firma reálně funguje, a navrch české jádro, které je drží pohromadě a které zahraniční nástroje nedoženou.</p>
+    </div>
+    <div class="grid4 reveal">
+      <div class="mod"><span class="tag">Oblast A</span><h3>Zakázky a nabídky</h3><p class="muted">Od odkazu po podpis.</p><ul><li>Vytěžovací engine a pipeline zakázek</li><li>Návrh rozpočtu z výkazu výměr</li><li>Generování a podpis smlouvy o dílo</li><li>Bid a no-bid skóre, hlídání lhůt</li></ul></div>
+      <div class="mod"><span class="tag">Oblast B</span><h3>CRM</h3><p class="muted">Vše o zakázce pohromadě.</p><ul><li>Klienti, zadavatelé a subdodavatelé</li><li>Obchodní případy se stavem a historií</li><li>E-mail, SMS a WhatsApp u zakázky s AI shrnutím</li><li>Role, oprávnění a kompletní audit</li></ul></div>
+      <div class="mod"><span class="tag">Oblast C</span><h3>Tým a firma</h3><p class="muted">Přehled, kontrola, management.</p><ul><li>Dashboard pro majitele, stav všech zakázek</li><li>Plánování a dispečink týmu</li><li>Docházka a job costing, kde se ztrácí marže</li><li>Úkoly s fotodokumentací</li></ul></div>
+      <div class="mod"><span class="tag">České jádro</span><h3>Příkop, který nikdo nepřekročí</h3><p class="muted">Postaveno na českých pravidlech.</p><ul><li>Stavební deník dle vyhlášky</li><li>Výkaz výměr a mapování na ÚRS a RTS</li><li>Přenesená DPH, zádržné, zálohové faktury</li><li>NEN, profil zadavatele, Pohoda, Money, iDoklad</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- AGENTI -->
+<section id="agenti">
+  <div class="wrap">
+    <div class="head reveal">
+      <div class="eyebrow"><b>04</b> &nbsp;To nejcennější</div>
+      <h2>Katalog AI agentů</h2>
+      <p class="lead">Každou opakovanou činnost dělá pojmenovaný agent s jasnou rolí. Vy schvalujete jedním klikem, u každého údaje je citace na zdroj. Označení MVP jsou agenti, kterými začínáme.</p>
+    </div>
+    <div class="agcols reveal">
+      <div class="agcol"><span class="tag">Zakázky a tendry</span>
+        <div class="ag"><span class="pill mvp">MVP</span><div><div class="nm">Agent na poptávky a tendry</div><div class="ds">Z odkazu nebo dokumentu vytěží data, označí rizika a založí zakázku v CRM.</div></div></div>
+        <div class="ag"><span class="pill addon">add-on</span><div><div class="nm">Rozpočtář</div><div class="ds">Ocení výkaz výměr proti ÚRS a RTS i historickým cenám firmy.</div></div></div>
+        <div class="ag"><span class="pill addon">add-on</span><div><div class="nm">Lovec zakázek</div><div class="ds">Hlídá NEN a profily zadavatele, skóruje zakázky na shodu.</div></div></div>
+        <div class="ag"><span class="pill addon">add-on</span><div><div class="nm">Poptávkový agent</div><div class="ds">Rozešle poptávky subdodavatelům a srovná nabídky.</div></div></div>
+      </div>
+      <div class="agcol"><span class="tag">Finance a cashflow</span>
+        <div class="ag"><span class="pill mvp">MVP</span><div><div class="nm">Fakturační agent</div><div class="ds">Faktura a dodací list, pozná přenesenou DPH, ohlídá zádržné.</div></div></div>
+        <div class="ag"><span class="pill mvp">MVP</span><div><div class="nm">Zapisovač do CRM</div><div class="ds">Přepíše poptávky, e-maily, hovory a vizitky rovnou do CRM.</div></div></div>
+        <div class="ag"><span class="pill addon">add-on</span><div><div class="nm">Dodavatelské faktury</div><div class="ds">Vytěží přijaté faktury a přiřadí je na konkrétní zakázku.</div></div></div>
+        <div class="ag"><span class="pill addon">add-on</span><div><div class="nm">Párování plateb a upomínky</div><div class="ds">Spáruje platby a rozjede kaskádu upomínek.</div></div></div>
+      </div>
+      <div class="agcol"><span class="tag">Stavba a tým</span>
+        <div class="ag"><span class="pill mvp">MVP</span><div><div class="nm">Agent na stavební deník</div><div class="ds">Z fotek a hlasovky složí denní zápis dle vyhlášky.</div></div></div>
+        <div class="ag"><span class="pill addon">add-on</span><div><div class="nm">AI Recepční</div><div class="ds">24/7 zvedá hovory, kvalifikuje poptávku a založí deal.</div></div></div>
+        <div class="ag"><span class="pill addon">add-on</span><div><div class="nm">Koordinační agent</div><div class="ds">Rozešle partě a subdodavatelům úkoly a hlídá změny.</div></div></div>
+        <div class="ag"><span class="pill addon">add-on</span><div><div class="nm">Klientský report a reklamace</div><div class="ds">Reporty investorovi a evidence závad z fotek a hlasovek.</div></div></div>
+      </div>
+    </div>
+    <div class="leg reveal">
+      <span><span class="sw" style="background:var(--signal)"></span> MVP, agenti, kterými začínáme</span>
+      <span><span class="sw" style="border:1px solid var(--line2)"></span> prémioví add-on agenti</span>
+      <span class="dim">+ přes 20 agentů v katalogu</span>
+    </div>
+  </div>
+</section>
+
+<!-- HODNOTA -->
+<section id="hodnota">
+  <div class="wrap">
+    <div class="head reveal">
+      <div class="eyebrow"><b>05</b> &nbsp;Hodnota se měří v hodinách</div>
+      <h2>Kam dnes mizí týden</h2>
+      <p class="lead">Cenu vážeme na ušetřený čas, ne od oka. Tady je odhad, kolik hodin týdně žere opakovaná práce na jednoho člověka.</p>
+    </div>
+    <div class="valgrid reveal">
+      <div>
+        <div class="bars">
+          <div class="bar-row"><span class="lbl">hledání dokumentů</span><div class="bar-track"><div class="bar-fill c" style="--w:92%"></div></div><span class="val">5,5 h/týd</span></div>
+          <div class="bar-row"><span class="lbl">papírování na stavbě</span><div class="bar-track"><div class="bar-fill c" style="--w:84%"></div></div><span class="val">5 h/týd</span></div>
+          <div class="bar-row"><span class="lbl">přepis do CRM</span><div class="bar-track"><div class="bar-fill b" style="--w:67%"></div></div><span class="val">4 h/týd</span></div>
+          <div class="bar-row"><span class="lbl">stavební deník</span><div class="bar-track"><div class="bar-fill a" style="--w:63%"></div></div><span class="val">3,75 h/týd</span></div>
+          <div class="bar-row"><span class="lbl">fakturace a upomínky</span><div class="bar-track"><div class="bar-fill b" style="--w:34%"></div></div><span class="val">2 h/týd</span></div>
+        </div>
+        <div class="barleg">
+          <span style="color:var(--signal)">● ověřeno (CZ a kontrola)</span>
+          <span style="color:#6d6d76">● CZ vendor nebo odhad</span>
+          <span>● zahraniční odhad</span>
+        </div>
+      </div>
+      <div class="macro">
+        <div class="stat"><div class="big" data-n="65" data-suf=" %">0</div><div class="st-l">firem přenáší data mezi systémy jen ručně nebo vůbec</div></div>
+        <div class="stat"><div class="big" data-n="40" data-suf=" %">0</div><div class="st-l">nepoužívá žádnou automatizaci, 35 % žádnou AI</div></div>
+        <div class="stat"><div class="big" data-n="38" data-suf=" %">0</div><div class="st-l">nesleduje hodiny ani ziskovost zakázek</div></div>
+        <div class="stat"><div class="big" data-n="74" data-suf=" tis.">0</div><div class="st-l">chybějících lidí ve stavebnictví do pěti let</div></div>
+      </div>
+    </div>
+    <p class="honest reveal">// Poctivě: jediná solidní česká anketa (Caflou, 40 firem) je malá a od dodavatele, část hodinových čísel je vendorská nebo zahraniční. Sazba 1500 Kč/h je odhad. Přesná čísla u konkrétní firmy společně změříme při pilotu, z toho vznikne váš ROI.</p>
+  </div>
+</section>
+
+<!-- CENIK -->
+<section id="cenik">
+  <div class="wrap">
+    <div class="head reveal">
+      <div class="eyebrow"><b>06</b> &nbsp;Balíčky podle velikosti firmy</div>
+      <h2>Ceník</h2>
+      <p class="lead">Paušál za firmu, ne za uživatele. Externí lidé zdarma. AI modely v ceně. Platba zavedení 50 % po podpisu, 50 % po nasazení. Ceny bez DPH.</p>
+    </div>
+    <div class="prices reveal">
+      <div class="price"><div class="pn">START</div><div class="pfor">malá firma do 10 lidí</div><div class="amt">zavedení <b>29 900 Kč</b></div><div class="mo">paušál <b>4 990 Kč</b> / měsíc</div><ul><li>Engine zakázek a CRM</li><li>Zapisovač do CRM</li><li>Stavební deník</li><li>Fakturace iDoklad nebo Fakturoid</li></ul></div>
+      <div class="price feat"><div class="badge">Nejčastější</div><div class="pn">PROFI</div><div class="pfor">střední firma 10 až 40 lidí</div><div class="amt">zavedení <b>99 900 Kč</b></div><div class="mo">paušál <b>11 900 Kč</b> / měsíc</div><ul><li>Vše ze Start</li><li>Rozpočet z výkazu výměr, job costing</li><li>Dispečink, docházka, subdodavatelé</li><li>Pohoda, Money, ABRA, podpis smluv</li></ul></div>
+      <div class="price"><div class="pn">MAX</div><div class="pfor">větší firma 40+ lidí</div><div class="amt">zavedení <b>od 240 000 Kč</b></div><div class="mo">paušál <b>od 24 000 Kč</b> / měsíc</div><ul><li>Vše z Profi</li><li>Monitoring NEN a profilů zadavatele</li><li>Vlastní moduly CRM na míru</li><li>API, webhooky, přednostní podpora</li></ul></div>
+      <div class="price"><div class="pn">NA MÍRU</div><div class="pfor">bespoke jako Zlín nebo Vision Reality</div><div class="amt">zavedení <b>300 až 700 tis.</b></div><div class="mo">paušál <b>dle provozu</b></div><ul><li>Řešení šité na míru od základu</li><li>Modulární, platíte za to, co používáte</li><li>Klasická agenturní spolupráce</li></ul></div>
+    </div>
+    <p class="price-note reveal">// Jednotlivé agenty jdou dokoupit jako moduly. Náročné běhy přes kredity. Cenu vždy obhájíme ušetřenými hodinami u vaší firmy.</p>
+  </div>
+</section>
+
+<!-- PROC -->
+<section id="proc">
+  <div class="wrap">
+    <div class="head reveal"><div class="eyebrow"><b>07</b> &nbsp;Proč MAITRIX</div><h2>Postaveno na tom, co už reálně běží</h2></div>
+    <div class="why reveal">
+      <div class="wcard"><h3>Člověk v kličce</h3><p>Nic se nezapíše do CRM ani účetnictví bez schválení. AI navrhne, vy potvrdíte.</p></div>
+      <div class="wcard"><h3>Citace u všeho</h3><p>U každého vytěženého údaje a rizika odkaz na konkrétní stránku. Žádná černá skříňka.</p></div>
+      <div class="wcard"><h3>České jádro</h3><p>Deník, výkaz výměr, přenesená DPH, NEN. To zahraniční nástroje nedoženou.</p></div>
+      <div class="wcard"><h3>Ověřené v praxi</h3><p>Vytěžování a zápis do CRM už běží u Sportovních podlah Zlín, Bainara a SAMATu.</p></div>
+      <div class="wcard"><h3>Integrace, ne náhrada</h3><p>Napojíme se na to, co používáte. Pohoda, Money, iDoklad, Fakturoid, Pipedrive.</p></div>
+      <div class="wcard"><h3>Rychlé nasazení</h3><p>Pilot za 6 až 8 týdnů a od prvního dne měříme, kolik hodin to firmě vrátí.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap" style="max-width:900px">
+    <div class="head reveal"><div class="eyebrow"><b>08</b> &nbsp;Časté otázky</div><h2>Co se nejvíc ptáte</h2></div>
+    <div class="faq reveal">
+      <div class="qa"><button onclick="this.parentElement.classList.toggle('open');var a=this.nextElementSibling;a.style.maxHeight=a.style.maxHeight?'':a.scrollHeight+'px'">Jak dlouho trvá nasazení<span class="ic">+</span></button><div class="a"><p>Pilot nasadíme za 6 až 8 týdnů. Začneme tím, co vás nejvíc bolí, a postupně přidáváme další agenty.</p></div></div>
+      <div class="qa"><button onclick="this.parentElement.classList.toggle('open');var a=this.nextElementSibling;a.style.maxHeight=a.style.maxHeight?'':a.scrollHeight+'px'">Napojíte se na náš účetní a CRM systém<span class="ic">+</span></button><div class="a"><p>Ano. Napojujeme se na Pohoda, Money, ABRA, iDoklad, Fakturoid i na CRM jako Pipedrive nebo Raynet. Integrace je naše silná stránka.</p></div></div>
+      <div class="qa"><button onclick="this.parentElement.classList.toggle('open');var a=this.nextElementSibling;a.style.maxHeight=a.style.maxHeight?'':a.scrollHeight+'px'">Je to bezpečné a v souladu s GDPR<span class="ic">+</span></button><div class="a"><p>Data jsou uložená v EU, GDPR. Každý zaměstnanec má vlastní přístup a u každého kroku je audit, kdo co a kdy udělal.</p></div></div>
+      <div class="qa"><button onclick="this.parentElement.classList.toggle('open');var a=this.nextElementSibling;a.style.maxHeight=a.style.maxHeight?'':a.scrollHeight+'px'">Co když AI udělá chybu<span class="ic">+</span></button><div class="a"><p>Nic se nezapíše bez vašeho schválení a u každého údaje vidíte zdroj. Navíc platí záruka funkčnosti, když to spolehlivě nezpracuje vaše dokumenty, dotáhneme bez doplatku.</p></div></div>
+      <div class="qa"><button onclick="this.parentElement.classList.toggle('open');var a=this.nextElementSibling;a.style.maxHeight=a.style.maxHeight?'':a.scrollHeight+'px'">Kolik to stojí<span class="ic">+</span></button><div class="a"><p>Balíčky od 29 900 Kč zavedení a 4 990 Kč měsíčně. Cenu vždy obhájíme ušetřenými hodinami u vaší firmy. Ceny jsou bez DPH, nejsme plátci.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="wrap">
+  <div class="cta reveal" id="kontakt">
+    <div class="eyebrow" style="color:var(--signal)">Spolupráce</div>
+    <h2 style="margin-top:16px">Začneme tím, co vás nejvíc bolí</h2>
+    <p class="lead" style="color:var(--ink);opacity:.85">Bezplatná konzultace na 30 minut. Projdeme vaše procesy, vybereme agenty s nejvyšší návratností a domluvíme pilot.</p>
+    <div class="hero-cta">
+      <a href="mailto:matej.jira@gmail.com" class="btn btn-primary">Domluvit konzultaci →</a>
+      <button class="btn btn-ghost" onclick="openChat()">Zeptat se asistenta</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <div class="logo"><span><span class="br">[</span>MAITRIX<span class="br">]</span></span><small>Stavby</small></div>
+      <p class="muted">AI agentura. Automatizujeme procesy a stavíme AI produkty na míru. Specializace finance a stavebnictví, ve výsledku ale postavíme cokoliv.</p>
+    </div>
+    <div style="text-align:right">
+      <div class="mono" style="color:var(--graphite);font-size:13px;margin-bottom:10px">MAITRIX ESCAPE s.r.o. · Praha</div>
+      <a href="mailto:matej.jira@gmail.com">matej.jira@gmail.com</a>
+    </div>
+  </div>
+</footer>
+
+<!-- CHATBOT -->
+<button class="cbtn" onclick="toggleChat()" aria-label="Asistent">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</button>
+<div class="cpanel" id="cpanel">
+  <div class="chead">
+    <div class="av">[M]</div>
+    <div><div class="nm">Asistent MAITRIX</div><div class="st">online, odpovídá hned</div></div>
+    <button class="cx" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="cbody" id="cbody"></div>
+  <div class="chips" id="cchips"></div>
+  <div class="cfoot">
+    <input id="cinput" placeholder="Zeptejte se na cokoliv..." onkeydown="if(event.key==='Enter')sendChat()" />
+    <button onclick="sendChat()">→</button>
+  </div>
+</div>
+
+<script>
+/* ---------- WebGL shader background (Matrix red rain + plasma, z maitrix.cz) ---------- */
+(function(){
+  var c=document.getElementById('shader');if(!c)return;
+  var gl=c.getContext('webgl')||c.getContext('experimental-webgl');
+  if(!gl){c.style.background='radial-gradient(circle at 70% 20%,rgba(245,57,45,.12),#09090b 60%)';return;}
+  var VS="attribute vec2 a_pos;void main(){gl_Position=vec4(a_pos,0.0,1.0);}";
+  var FS="precision highp float;uniform vec2 u_res;uniform float u_time;"
+  +"float hash(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}"
+  +"float hash1(float n){return fract(sin(n)*43758.5453);}"
+  +"float noise(vec2 p){vec2 i=floor(p);vec2 f=fract(p);float a=hash(i);float b=hash(i+vec2(1.0,0.0));float cc=hash(i+vec2(0.0,1.0));float d=hash(i+vec2(1.0,1.0));vec2 u=f*f*(3.0-2.0*f);return mix(mix(a,b,u.x),mix(cc,d,u.x),u.y);}"
+  +"float fbm(vec2 p){float v=0.0;float a=0.5;for(int i=0;i<3;i++){v+=a*noise(p);p*=2.0;a*=0.5;}return v;}"
+  +"float glyph(vec2 cuv,float seed){vec2 g=floor(cuv*5.0);float bit=step(0.5,hash(g+seed*13.7));vec2 inside=step(vec2(0.08),cuv)*step(cuv,vec2(0.92));return bit*inside.x*inside.y;}"
+  +"void main(){vec2 fc=gl_FragCoord.xy;vec2 p=(fc-0.5*u_res)/u_res.y;float t=u_time;"
+  +"vec2 q=vec2(fbm(p*1.4+vec2(0.0,t*0.06)),fbm(p*1.4+vec2(5.2,t*0.08)));float pl=clamp(fbm(p*1.4+2.6*q)*1.25-0.22,0.0,1.0);"
+  +"float cell=24.0*(u_res.y/900.0);vec2 cid=floor(fc/cell);vec2 cuv=fract(fc/cell);float rows=u_res.y/cell;"
+  +"float colRand=hash1(cid.x*1.3+2.0);float speed=4.0+colRand*9.0;float colLen=9.0+colRand*16.0;float rowFromTop=rows-cid.y;float head=mod(t*speed+colRand*rows*2.0,rows+colLen);float dist=head-rowFromTop;"
+  +"float trail=exp(-max(dist,0.0)/(colLen*0.32))*step(-0.5,dist);float seed=floor(t*7.0*(0.5+colRand))+cid.x*3.1+floor(rowFromTop);float g=glyph(cuv,seed);float rain=trail*g;float headGlow=smoothstep(1.3,0.0,abs(dist))*g;"
+  +"vec3 col=vec3(0.014,0.011,0.016);col+=vec3(0.30,0.04,0.04)*pl*0.55;vec3 dimRed=vec3(0.88,0.12,0.10);vec3 hot=vec3(1.0,0.62,0.5);vec3 rainCol=mix(dimRed,hot,headGlow);col+=rainCol*rain*1.35+hot*headGlow*0.85;"
+  +"float vig=smoothstep(1.4,0.28,length(p));col*=mix(0.5,1.0,vig);gl_FragColor=vec4(col,1.0);}";
+  function sh(t,s){var o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o;}
+  var pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,VS));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(pr);gl.useProgram(pr);
+  var bf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,bf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+  var lc=gl.getAttribLocation(pr,'a_pos');gl.enableVertexAttribArray(lc);gl.vertexAttribPointer(lc,2,gl.FLOAT,false,0,0);
+  var uR=gl.getUniformLocation(pr,'u_res'),uT=gl.getUniformLocation(pr,'u_time');
+  function rs(){var dpr=Math.min(window.devicePixelRatio||1,1.5);c.width=c.clientWidth*dpr;c.height=c.clientHeight*dpr;gl.viewport(0,0,c.width,c.height);}
+  window.addEventListener('resize',rs);rs();
+  var st=performance.now(),run=true;
+  document.addEventListener('visibilitychange',function(){run=!document.hidden;if(run)loop();});
+  function loop(){if(!run)return;var t=(performance.now()-st)/1000;gl.uniform2f(uR,c.width,c.height);gl.uniform1f(uT,t);gl.drawArrays(gl.TRIANGLES,0,3);requestAnimationFrame(loop);}
+  loop();
+})();
+
+/* ---------- reveal on scroll (robustní, vždy se spustí) ---------- */
+(function(){
+  var els=[].slice.call(document.querySelectorAll('.reveal'));
+  function check(){
+    var vh=window.innerHeight||document.documentElement.clientHeight;
+    els=els.filter(function(e){
+      var r=e.getBoundingClientRect();
+      if(r.top<vh*0.9&&r.bottom>0){e.classList.add('in');if(e.querySelector('[data-n]'))runCounters(e);return false;}
+      return true;
+    });
+  }
+  window.addEventListener('scroll',check,{passive:true});
+  window.addEventListener('resize',check);
+  window.addEventListener('load',check);
+  check();setTimeout(check,150);setTimeout(check,600);
+})();
+function runCounters(scope){
+  scope.querySelectorAll('[data-n]').forEach(function(el){
+    var to=+el.getAttribute('data-n'),suf=el.getAttribute('data-suf')||'',s=performance.now();
+    function tick(now){var p=Math.min((now-s)/1100,1);var v=Math.round(to*(1-Math.pow(1-p,3)));el.textContent=v+suf;if(p<1)requestAnimationFrame(tick);}
+    requestAnimationFrame(tick);
+  });
+}
+
+/* ---------- hero terminal typing ---------- */
+(function(){
+  var out=document.getElementById('termOut');if(!out)return;
+  var lines=[
+    {t:"› vložen odkaz na zakázku",c:"pr"},
+    {t:"› stahuji dokumenty .............. 7 souborů",c:""},
+    {t:"› vytěžuji data ................. 28 polí",c:""},
+    {t:"  cena, zálohy, termíny, záruka, sankce",c:"pr"},
+    {t:"› kontrola rizik ................ 3 nálezy",c:"sg"},
+    {t:"  ⚠ nestandardní pokuta · str. 6",c:"sg"},
+    {t:"  ⚠ dlouhá splatnost · str. 9",c:"sg"},
+    {t:"› čeká na schválení člověka",c:"pr"},
+    {t:"✓ zakázka založena v CRM",c:"ok"}
+  ];
+  var i=0,buf="";
+  function typeLine(){
+    if(i>=lines.length){setTimeout(function(){out.innerHTML="";buf="";i=0;typeLine();},3400);return;}
+    var ln=lines[i],j=0;var cls=ln.c?(' class="'+ln.c+'"'):'';
+    out.innerHTML=buf+'<span'+cls+'></span><span class="cursor"></span>';
+    var span=out.querySelectorAll('span')[out.querySelectorAll('span').length-2];
+    var iv=setInterval(function(){
+      span.textContent=ln.t.slice(0,j++);
+      if(j>ln.t.length){clearInterval(iv);buf+='<span'+cls+'>'+ln.t+'</span>\n';i++;setTimeout(typeLine,ln.c==='sg'?450:280);}
+    },18);
+  }
+  typeLine();
+})();
+
+/* ---------- chatbot ---------- */
+var KB=[
+  {k:["co ","umí","produkt","na co","k čemu","děl"],a:"MAITRIX Stavby je AI systém pro stavební firmy. Vložíte odkaz na zakázku, AI ji přečte, vytáhne data, označí rizika a založí v CRM. K tomu fakturace s přenesenou DPH, zápis poptávek do CRM a stavební deník z fotek. Celá firma na jednom místě."},
+  {k:["cena","kolik","stoj","ceník","cenik","rozpočet"],a:"Balíčky: Start 29 900 Kč zavedení + 4 990 Kč/měs, Profi 99 900 + 11 900/měs, Max od 240 000 + od 24 000/měs, a Na míru. Paušál za firmu, ne za uživatele, AI v ceně. Ceny bez DPH. Cenu vždy obhájíme ušetřenými hodinami u vaší firmy."},
+  {k:["deník","denik","vyhlášk"],a:"Agent na stavební deník složí denní zápis z fotek a krátké hlasovky: doplní počasí podle GPS, provedené práce, docházku a fotky. Vy ráno odkliknete. Deník je vždy kompletní a obhajitelný, zákonná povinnost vyřešena."},
+  {k:["dph","daň","přenes","prenes","zádrž","zadrz"],a:"Fakturační agent automaticky pozná přenesenou daňovou povinnost u stavebních prací (CZ-CPA 41-43), doplní text „Daň odvede zákazník“ a ohlídá zádržné. Méně chyb a doměrků od finančního úřadu."},
+  {k:["bezpeč","bezpec","gdpr","data","soukrom"],a:"Data jsou uložená v EU, v souladu s GDPR. Každý zaměstnanec má vlastní přístup a u každého kroku je audit, kdo co a kdy udělal. Nic se nezapíše bez vašeho schválení."},
+  {k:["jak dlouho","nasazen","termín","termin","trvá","trva","rychle"],a:"Pilot nasadíme za 6 až 8 týdnů. Začneme tím, co vás nejvíc bolí, od prvního dne měříme ušetřené hodiny a postupně přidáváme další agenty."},
+  {k:["pilot","zkou","test","reference"],a:"Pilot je první nasazení u jedné firmy. Vybereme agenty s nejvyšší návratností, nasadíme je za 6 až 8 týdnů a změříme reálně ušetřené hodiny. Z toho vznikne vaše ROI a reference."},
+  {k:["integ","pohoda","money","idoklad","fakturoid","crm","pipedrive","účetn","ucetn"],a:"Napojujeme se na český stack: Pohoda, Money, ABRA, iDoklad, Fakturoid, a na CRM jako Pipedrive nebo Raynet. Integrace, ne náhrada, napojíme se na to, co už používáte."},
+  {k:["kdo","pro koho","velk","malá","mala","firm"],a:"Cílíme na malé a střední stavební firmy, řemeslníky a subdodavatele i větší firmy. Produkt škáluje od balíčku Start po řešení na míru."},
+  {k:["agent","kolik agent","seznam","modul"],a:"V katalogu je přes 20 agentů ve třech oblastech: zakázky a tendry, finance a cashflow, stavba a tým. Začínáme čtyřmi MVP agenty: poptávky a tendry, zapisovač do CRM, fakturace a stavební deník."},
+  {k:["nen","zakázk","zakazk","tendr","veřejn","verejn","výkaz","vykaz","úrs","urs"],a:"Lovec zakázek hlídá NEN a profily zadavatele a skóruje zakázky na shodu s firmou. Rozpočtář ocení výkaz výměr proti ÚRS a RTS i historickým cenám. Agent na poptávky stáhne dokumentaci, vytěží data a založí zakázku v CRM."},
+  {k:["kontakt","schůz","schuz","konzult","domluv","zavol","mail","e-mail"],a:"Nejlíp domluvit bezplatnou konzultaci na 30 minut. Napište na matej.jira@gmail.com a projdeme vaše procesy. Klidně napište, co vás nejvíc bolí, a navrhnu, kde začít."}
+];
+var CHIPS=["Co to umí?","Kolik to stojí?","Jak dlouho trvá nasazení?","Napojíte se na Pohodu?","Co je pilot?"];
+var cbody=document.getElementById('cbody'),cchips=document.getElementById('cchips'),cinput=document.getElementById('cinput'),cpanel=document.getElementById('cpanel');
+var started=false;
+function toggleChat(){cpanel.classList.toggle('open');if(cpanel.classList.contains('open')){if(!started){started=true;botSay("Dobrý den. Jsem asistent MAITRIX. Zeptejte se na cokoliv o produktu pro stavební firmy, nebo zkuste jednu z otázek níže.");renderChips();}cinput.focus();}}
+function openChat(){if(!cpanel.classList.contains('open'))toggleChat();}
+function renderChips(){cchips.innerHTML='';CHIPS.forEach(function(q){var b=document.createElement('button');b.className='chip';b.textContent=q;b.onclick=function(){ask(q)};cchips.appendChild(b)})}
+function add(cls,txt){var d=document.createElement('div');d.className='msg '+cls;d.textContent=txt;cbody.appendChild(d);cbody.scrollTop=cbody.scrollHeight;return d;}
+function botSay(txt){add('bot',txt)}
+function think(cb){var t=document.createElement('div');t.className='typing';t.innerHTML='<i></i><i></i><i></i>';cbody.appendChild(t);cbody.scrollTop=cbody.scrollHeight;setTimeout(function(){t.remove();cb()},600+Math.random()*500)}
+function answer(q){var s=q.toLowerCase();var best=null;for(var i=0;i<KB.length;i++){for(var j=0;j<KB[i].k.length;j++){if(s.indexOf(KB[i].k[j])>-1){best=KB[i].a;break}}if(best)break}return best||"Dobrá otázka. Tohle nejlíp probereme na bezplatné konzultaci, napište na matej.jira@gmail.com a ozvu se. Mezitím se můžete zeptat na cenu, nasazení, stavební deník, přenesenou DPH nebo integrace.";}
+function ask(q){add('me',q);cchips.innerHTML='';think(function(){botSay(answer(q));renderChips()})}
+function sendChat(){var v=cinput.value.trim();if(!v)return;cinput.value='';ask(v)}
+</script>
+</body>
+</html>

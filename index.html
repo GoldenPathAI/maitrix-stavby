@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>[MAITRIX] Stavby - AI agenti pro stavební firmy</title>
+<title>[MAITRIX] Stavařina - AI agenti pro stavební firmy</title>
 <meta name="description" content="AI agenti pro stavební firmy. Od odkazu na zakázku po fakturu. Vytěžování dokumentů, CRM, stavební deník a fakturace, česky a podle českých pravidel." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -209,6 +209,39 @@
   .foot a{font-family:var(--mono);color:var(--graphite);font-size:13px}
   .foot a:hover{color:var(--signal)}
 
+  /* calculator */
+  .calc{display:grid;grid-template-columns:1fr 1fr;margin-top:46px;border:1px solid var(--line)}
+  .calc-in{padding:32px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:24px}
+  .calc-out{padding:32px;background:var(--panel)}
+  .ctrl label,.ctrl .clbl{display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;color:var(--graphite);margin-bottom:13px}
+  .ctrl output{font-family:var(--mono);color:var(--signal);font-weight:500;font-size:14px}
+  .ctrl input[type=range]{width:100%;accent-color:var(--signal);height:4px;cursor:pointer}
+  .pkgs{display:flex;gap:8px}
+  .pkgs button{flex:1;font-family:var(--mono);font-size:13px;padding:11px;background:transparent;border:1px solid var(--line2);color:var(--ink);cursor:pointer;transition:all .15s}
+  .pkgs button:hover{border-color:var(--signal)}
+  .pkgs button.active{background:var(--signal);color:var(--paper);border-color:var(--signal)}
+  .pkg-meta{font-family:var(--mono);font-size:11.5px;color:var(--dim);margin-top:12px;line-height:1.5}
+  .res-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+  .res-row span{font-size:13.5px;color:var(--graphite);flex:1}
+  .res-row b{font-family:var(--mono);font-size:19px;font-weight:700}
+  .res-row i{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--dim);width:62px;text-align:right}
+  .res-big{display:flex;align-items:baseline;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--line2)}
+  .res-big span{font-size:14.5px;color:var(--ink)}
+  .res-big b{font-family:var(--mono);font-size:30px;color:var(--signal);font-weight:700}
+  .res-grid{display:grid;grid-template-columns:1fr 1fr}
+  .res-grid > div{padding:16px 0;border-bottom:1px solid var(--line)}
+  .res-grid > div:nth-child(odd){padding-right:16px}
+  .res-grid span{display:block;font-size:11.5px;color:var(--dim);margin-bottom:5px;font-family:var(--mono)}
+  .res-grid b{font-family:var(--mono);font-size:17px;font-weight:700}
+  .res-note{margin-top:18px;font-size:13.5px;color:var(--graphite);line-height:1.6}
+  .res-note b{color:var(--ink);font-weight:600}
+  .res-foot{margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--dim);line-height:1.5}
+  .benefits{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-top:none}
+  .benefits .ben{padding:24px;border-right:1px solid var(--line)}
+  .benefits .ben:last-child{border-right:none}
+  .benefits b{display:block;font-size:15px;margin-bottom:7px}
+  .benefits span{font-size:13px;color:var(--graphite);line-height:1.5}
+
   /* chatbot */
   .cbtn{position:fixed;bottom:26px;right:26px;z-index:80;background:var(--signal);color:var(--paper);border:none;width:60px;height:60px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 40px rgba(245,57,45,.4);transition:transform .2s}
   .cbtn:hover{transform:scale(1.06)}
@@ -243,6 +276,8 @@
     .pains,.agcols,.why{grid-template-columns:1fr}
     .steps{grid-template-columns:1fr 1fr}.grid4{grid-template-columns:1fr}
     .prices{grid-template-columns:1fr 1fr}.valgrid{grid-template-columns:1fr}
+    .calc{grid-template-columns:1fr}.calc-in{border-right:none;border-bottom:1px solid var(--line)}
+    .benefits{grid-template-columns:1fr}.benefits .ben{border-right:none;border-bottom:1px solid var(--line)}
     .mod:nth-child(2n){border-right:1px solid var(--line)}
     .pain,.wcard{border-right:1px solid var(--line)}
   }
@@ -257,12 +292,13 @@
 
 <header>
   <div class="wrap nav">
-    <a href="#" class="logo"><span><span class="br">[</span>MAITRIX<span class="br">]</span></span><small>Stavby</small></a>
+    <a href="#" class="logo"><span><span class="br">[</span>MAITRIX<span class="br">]</span></span><small>Stavařina</small></a>
     <nav class="navlinks">
       <a href="#problem">Problém</a>
       <a href="#jak">Řešení</a>
       <a href="#agenti">Agenti</a>
       <a href="#hodnota">Hodnota</a>
+      <a href="#kalkulacka">Kalkulačka</a>
       <a href="#cenik">Ceník</a>
       <a href="#kontakt" class="btn btn-primary">Konzultace</a>
     </nav>
@@ -425,11 +461,66 @@
   </div>
 </section>
 
+<!-- KALKULACKA -->
+<section id="kalkulacka">
+  <div class="wrap">
+    <div class="head reveal">
+      <div class="eyebrow"><b>06</b> &nbsp;Spočítejte si návratnost</div>
+      <h2>Kalkulačka úspory a ROI</h2>
+      <p class="lead">Zadejte pár čísel o vaší firmě a vyberte balíček. Spočítáme, kolik hodin a korun vám software vrátí týdně, měsíčně i ročně, a za jak dlouho se zaplatí.</p>
+    </div>
+    <div class="calc reveal">
+      <div class="calc-in">
+        <div class="ctrl">
+          <label>Počet pracovníků <output id="oW">12</output></label>
+          <input type="range" id="cW" min="1" max="120" value="12" step="1">
+        </div>
+        <div class="ctrl">
+          <label>Administrativa na osobu denně <output id="oH">1,5 h</output></label>
+          <input type="range" id="cH" min="0.5" max="6" value="1.5" step="0.5">
+        </div>
+        <div class="ctrl">
+          <label>Náklad na hodinu práce <output id="oR">600 Kč</output></label>
+          <input type="range" id="cR" min="300" max="2000" value="600" step="50">
+        </div>
+        <div class="ctrl">
+          <span class="clbl">Balíček</span>
+          <div class="pkgs" id="cPkg">
+            <button type="button" data-p="start" class="active">Start</button>
+            <button type="button" data-p="profi">Profi</button>
+            <button type="button" data-p="max">Max</button>
+          </div>
+          <div class="pkg-meta" id="pkgMeta"></div>
+        </div>
+      </div>
+      <div class="calc-out">
+        <div class="res-row"><span>Ušetřený čas</span><b id="rHm">—</b><i>h / měsíc</i></div>
+        <div class="res-row"><span>Úspora týdně</span><b id="rKw">—</b><i>Kč / týd</i></div>
+        <div class="res-row"><span>Úspora měsíčně</span><b id="rKm">—</b><i>Kč / měs</i></div>
+        <div class="res-big"><span>Úspora ročně</span><b id="rKy">—</b></div>
+        <div class="res-grid">
+          <div><span>Náklad 1. rok</span><b id="rCost">—</b></div>
+          <div><span>Návratnost</span><b id="rPay">—</b></div>
+          <div><span>Čistý přínos 1. rok</span><b id="rNet1">—</b></div>
+          <div><span>Čistý zisk za 3 roky</span><b id="rNet3">—</b></div>
+        </div>
+        <p class="res-note">A k tomu, co se nedá spočítat: <b>méně chyb</b> (u všeho citace na zdroj, nezapomenuté zádržné, správná přenesená DPH), vaši lidé dělají <b>placenou odbornou práci</b> místo přepisování, a rychlejší fakturace znamená <b>peníze dřív</b>.</p>
+        <p class="res-foot">* Úspora je odhad podle zadaných čísel a podílu administrativy, kterou agenti převezmou. Přesné číslo u vaší firmy společně změříme při pilotu.</p>
+      </div>
+    </div>
+    <div class="benefits reveal">
+      <div class="ben"><b>Méně chyb</b><span>Citace u každého údaje, nezapomenuté zádržné, správný režim DPH</span></div>
+      <div class="ben"><b>Lidé na své práci</b><span>Odborná a placená práce místo administrativy, kterou udělá agent</span></div>
+      <div class="ben"><b>Rychlejší peníze</b><span>Zakázky a faktury hotové dřív, kratší doba inkasa</span></div>
+    </div>
+  </div>
+</section>
+
 <!-- CENIK -->
 <section id="cenik">
   <div class="wrap">
     <div class="head reveal">
-      <div class="eyebrow"><b>06</b> &nbsp;Balíčky podle velikosti firmy</div>
+      <div class="eyebrow"><b>07</b> &nbsp;Balíčky podle velikosti firmy</div>
       <h2>Ceník</h2>
       <p class="lead">Paušál za firmu, ne za uživatele. Externí lidé zdarma. AI modely v ceně. Platba zavedení 50 % po podpisu, 50 % po nasazení. Ceny bez DPH.</p>
     </div>
@@ -446,7 +537,7 @@
 <!-- PROC -->
 <section id="proc">
   <div class="wrap">
-    <div class="head reveal"><div class="eyebrow"><b>07</b> &nbsp;Proč MAITRIX</div><h2>Postaveno na tom, co už reálně běží</h2></div>
+    <div class="head reveal"><div class="eyebrow"><b>08</b> &nbsp;Proč MAITRIX</div><h2>Postaveno na tom, co už reálně běží</h2></div>
     <div class="why reveal">
       <div class="wcard"><h3>Člověk v kličce</h3><p>Nic se nezapíše do CRM ani účetnictví bez schválení. AI navrhne, vy potvrdíte.</p></div>
       <div class="wcard"><h3>Citace u všeho</h3><p>U každého vytěženého údaje a rizika odkaz na konkrétní stránku. Žádná černá skříňka.</p></div>
@@ -461,7 +552,7 @@
 <!-- FAQ -->
 <section id="faq">
   <div class="wrap" style="max-width:900px">
-    <div class="head reveal"><div class="eyebrow"><b>08</b> &nbsp;Časté otázky</div><h2>Co se nejvíc ptáte</h2></div>
+    <div class="head reveal"><div class="eyebrow"><b>09</b> &nbsp;Časté otázky</div><h2>Co se nejvíc ptáte</h2></div>
     <div class="faq reveal">
       <div class="qa"><button onclick="this.parentElement.classList.toggle('open');var a=this.nextElementSibling;a.style.maxHeight=a.style.maxHeight?'':a.scrollHeight+'px'">Jak dlouho trvá nasazení<span class="ic">+</span></button><div class="a"><p>Pilot nasadíme za 6 až 8 týdnů. Začneme tím, co vás nejvíc bolí, a postupně přidáváme další agenty.</p></div></div>
       <div class="qa"><button onclick="this.parentElement.classList.toggle('open');var a=this.nextElementSibling;a.style.maxHeight=a.style.maxHeight?'':a.scrollHeight+'px'">Napojíte se na náš účetní a CRM systém<span class="ic">+</span></button><div class="a"><p>Ano. Napojujeme se na Pohoda, Money, ABRA, iDoklad, Fakturoid i na CRM jako Pipedrive nebo Raynet. Integrace je naše silná stránka.</p></div></div>
@@ -488,7 +579,7 @@
 <footer>
   <div class="wrap foot">
     <div>
-      <div class="logo"><span><span class="br">[</span>MAITRIX<span class="br">]</span></span><small>Stavby</small></div>
+      <div class="logo"><span><span class="br">[</span>MAITRIX<span class="br">]</span></span><small>Stavařina</small></div>
       <p class="muted">AI agentura. Automatizujeme procesy a stavíme AI produkty na míru. Specializace finance a stavebnictví, ve výsledku ale postavíme cokoliv.</p>
     </div>
     <div style="text-align:right">
@@ -628,6 +719,34 @@ function think(cb){var t=document.createElement('div');t.className='typing';t.in
 function answer(q){var s=q.toLowerCase();var best=null;for(var i=0;i<KB.length;i++){for(var j=0;j<KB[i].k.length;j++){if(s.indexOf(KB[i].k[j])>-1){best=KB[i].a;break}}if(best)break}return best||"Dobrá otázka. Tohle nejlíp probereme na bezplatné konzultaci, napište na matej.jira@gmail.com a ozvu se. Mezitím se můžete zeptat na cenu, nasazení, stavební deník, přenesenou DPH nebo integrace.";}
 function ask(q){add('me',q);cchips.innerHTML='';think(function(){botSay(answer(q));renderChips()})}
 function sendChat(){var v=cinput.value.trim();if(!v)return;cinput.value='';ask(v)}
+
+/* ---------- ROI kalkulačka ---------- */
+(function(){
+  var PK={start:{n:'Start',setup:29900,mo:4990,rate:.40},profi:{n:'Profi',setup:99900,mo:11900,rate:.60},max:{n:'Max',setup:240000,mo:24000,rate:.75}};
+  var sel='start';
+  var W=document.getElementById('cW'),H=document.getElementById('cH'),R=document.getElementById('cR');
+  if(!W)return;
+  function f(n){return Math.round(n).toLocaleString('cs-CZ')}
+  function fk(n){return f(n)+' Kč'}
+  function setT(id,v){var e=document.getElementById(id);if(e)e.textContent=v}
+  function calc(){
+    var w=+W.value,h=+H.value,r=+R.value,p=PK[sel];
+    setT('oW',w);setT('oH',h.toLocaleString('cs-CZ')+' h');setT('oR',fk(r));
+    var adminWeek=w*h*5, savedHw=adminWeek*p.rate, savedHm=savedHw*4.33;
+    var savedKw=savedHw*r, savedKm=savedKw*4.33, savedKy=savedKw*52;
+    var cost1=p.setup+p.mo*12, netMonthly=savedKm-p.mo;
+    var pay=netMonthly>0?Math.ceil(p.setup/netMonthly):null;
+    var net1=savedKy-cost1, net3=savedKy*3-(p.setup+p.mo*36);
+    setT('rHm',f(savedHm));setT('rKw',f(savedKw));setT('rKm',f(savedKm));setT('rKy',fk(savedKy));
+    setT('rCost',fk(cost1));
+    setT('rPay',pay?(pay+' '+(pay===1?'měsíc':(pay<5?'měsíce':'měsíců'))):'dle nastavení');
+    setT('rNet1',fk(net1));setT('rNet3',fk(net3));
+    setT('pkgMeta','Zavedení '+fk(p.setup)+' + '+fk(p.mo)+'/měs. AI převezme ~'+Math.round(p.rate*100)+' % administrativy.');
+  }
+  [W,H,R].forEach(function(el){el.addEventListener('input',calc)});
+  document.querySelectorAll('#cPkg button').forEach(function(b){b.addEventListener('click',function(){sel=b.getAttribute('data-p');document.querySelectorAll('#cPkg button').forEach(function(x){x.classList.remove('active')});b.classList.add('active');calc()})});
+  calc();
+})();
 </script>
 </body>
 </html>

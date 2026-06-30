@@ -257,6 +257,18 @@
   .benefits b{display:block;font-size:15px;margin-bottom:7px}
   .benefits span{font-size:13px;color:var(--graphite);line-height:1.5}
 
+  /* team */
+  .team{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);margin-top:40px}
+  .member{padding:32px;border-right:1px solid var(--line)}
+  .member:last-child{border-right:none}
+  .ava{width:54px;height:54px;background:var(--signal);color:var(--paper);font-family:var(--mono);font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+  .mn{font-size:19px;font-weight:700;letter-spacing:-.02em}
+  .mr{font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;color:var(--signal);text-transform:uppercase;margin-top:5px}
+  .md{font-size:14px;color:var(--graphite);line-height:1.55;margin-top:14px}
+  .mc{font-family:var(--mono);font-size:13px;margin-top:16px}
+  .mc a{color:var(--ink)}
+  .mc a:hover{color:var(--signal)}
+
   /* proof */
   .proofgrid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);margin-top:40px}
   .proofnum{padding:28px;border-right:1px solid var(--line)}
@@ -302,6 +314,7 @@
     .calc{grid-template-columns:1fr}.calc-in{border-right:none;border-bottom:1px solid var(--line)}
     .benefits{grid-template-columns:1fr}.benefits .ben{border-right:none;border-bottom:1px solid var(--line)}
     .proofgrid{grid-template-columns:1fr}.proofnum{border-right:none;border-bottom:1px solid var(--line)}
+    .team{grid-template-columns:1fr}.member{border-right:none;border-bottom:1px solid var(--line)}
     .mod:nth-child(2n){border-right:1px solid var(--line)}
     .pain,.wcard{border-right:1px solid var(--line)}
   }
@@ -340,7 +353,7 @@
         <h1>CRM, které se<br><span class="signal">plní samo</span></h1>
         <p class="lead">Poptávky i veřejné zakázky se do CRM zapíšou jako zakázky samy. AI přečte dokument, vytáhne data, ohlídá rizika i lhůty a založí zakázku. Vy jen schválíte. K tomu fakturace a stavební deník, česky a podle českých pravidel.</p>
         <div class="hero-cta">
-          <a href="#kontakt" class="btn btn-primary">Domluvit konzultaci →</a>
+          <a href="https://calendar.app.google/ng9D9UnkPiNNHGmM6" target="_blank" rel="noopener" class="btn btn-primary">Rezervovat konzultaci →</a>
           <a href="#jak" class="btn btn-ghost">Jak to funguje</a>
         </div>
       </div>
@@ -640,6 +653,32 @@
   </div>
 </section>
 
+<!-- TYM -->
+<section id="tym">
+  <div class="wrap">
+    <div class="head reveal">
+      <div class="eyebrow"><b>Kdo za tím stojí</b> &nbsp;Dva jednatelé, žádná anonymita</div>
+      <h2>S vámi to nasadí konkrétní lidé</h2>
+    </div>
+    <div class="team reveal">
+      <div class="member">
+        <div class="ava">MJ</div>
+        <div class="mn">Ing. Matěj Jíra</div>
+        <div class="mr">Jednatel</div>
+        <div class="md">Vede firmu, obchod a komunikaci s klienty. S vámi projde procesy a navrhne, kde má automatizace největší návratnost.</div>
+        <div class="mc"><a href="tel:+420728683125">728 683 125</a> · <a href="mailto:matej.jira@gmail.com">matej.jira@gmail.com</a></div>
+      </div>
+      <div class="member">
+        <div class="ava">FK</div>
+        <div class="mn">Filip Krayem</div>
+        <div class="mr">Jednatel a hlavní technický specialista</div>
+        <div class="md">Hlavní specialista na programování a technická řešení. Stojí za tím, že agenti spolehlivě fungují a čistě se napojí na vaše systémy.</div>
+        <div class="mc"><a href="tel:+420775106219">775 106 219</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- CTA -->
 <div class="wrap">
   <div class="cta reveal" id="kontakt">
@@ -647,7 +686,7 @@
     <h2 style="margin-top:16px">Začneme tím, co vás nejvíc bolí</h2>
     <p class="lead" style="color:var(--ink);opacity:.85">Bezplatná konzultace na 30 minut. Projdeme vaše procesy, vybereme agenty s nejvyšší návratností a domluvíme pilot.</p>
     <div class="hero-cta">
-      <a href="mailto:matej.jira@gmail.com" class="btn btn-primary">Domluvit konzultaci →</a>
+      <a href="https://calendar.app.google/ng9D9UnkPiNNHGmM6" target="_blank" rel="noopener" class="btn btn-primary">Rezervovat konzultaci →</a>
       <a href="tel:+420728683125" class="btn btn-ghost">Zavolat 728 683 125</a>
       <button class="btn btn-ghost" onclick="openChat()">Zeptat se asistenta</button>
     </div>
@@ -658,7 +697,7 @@
   <div class="wrap foot">
     <div>
       <div class="logo"><span><span class="br">[</span>MAITRIX<span class="br">]</span></span><small>Stavařina</small></div>
-      <p class="muted">AI agentura. Automatizujeme procesy a stavíme AI produkty na míru. Specializace finance a stavebnictví, ve výsledku ale postavíme cokoliv.</p>
+      <p class="muted">Vaše pomocná ruka při zavádění AI agentů a automatizace do firmy. Ne nástroj navíc, ale reálná pomoc, která ve velkých firmách sebere desítky až stovky hodin opakované práce týdně a uvolní lidi na to, co je opravdu potřeba. Zaměření na stavebnictví a finance.</p>
     </div>
     <div style="text-align:right">
       <div class="mono" style="color:var(--graphite);font-size:13px;margin-bottom:10px">MAITRIX ESCAPE s.r.o. · Praha</div>
@@ -777,7 +816,7 @@ var KB=[
   {k:["co ","umí","produkt","na co","k čemu","děl"],a:"MAITRIX Stavby je AI systém pro stavební firmy. Vložíte odkaz na zakázku, AI ji přečte, vytáhne data, označí rizika a založí v CRM. K tomu fakturace s přenesenou DPH, zápis poptávek do CRM a stavební deník z fotek. Celá firma na jednom místě."},
   {k:["crm","plní samo","vyplň","přepis","ručně","raynet"],a:"Naše CRM se plní samo. Agent na poptávky a tendry založí zakázku z odkazu nebo dokumentu, Zapisovač přepíše e-maily, hovory a vizitky rovnou do CRM. Vy jen schválíte jedním klikem. Žádné ruční přepisování, což je hlavní důvod, proč CRM ve firmách jinde nefungují. U veřejných zakázek navíc ohlídáme lhůty a kvalifikaci."},
   {k:["referenc","kdo to používá","kdo používá","kdo to ma","case","bainar","zlín","zlin","ukázka","ukazka","demo","příklad","priklad"],a:"Reálný příklad: pro Viktora Bainara jsme připravili nasazení, kde AI vytáhne data ze smluv a zapíše je do Pipedrive. U firmy, kde 2 lidé trávili 8 hodin týdně přepisováním, to vrací zhruba 832 hodin a kolem 499 000 Kč ročně. Na stránce máte odkaz, jak to vidí majitel i tým."},
-  {k:["jak začít","zacit","začít","první krok","prvni krok","jak to rozjet","začneme"],a:"Začneme krátkou bezplatnou konzultací (30 minut), projdeme vaše procesy a vybereme agenty s nejvyšší návratností. Pak pilot u jedné firmy, kde od prvního dne měříme ušetřené hodiny. Zavolejte na 728 683 125 nebo napište na matej.jira@gmail.com."},
+  {k:["jak začít","zacit","začít","první krok","prvni krok","jak to rozjet","začneme"],a:"Začneme krátkou bezplatnou konzultací (30 minut), projdeme vaše procesy a vybereme agenty s nejvyšší návratností. Pak pilot u jedné firmy, kde od prvního dne měříme ušetřené hodiny. Rezervujte si termín na https://calendar.app.google/ng9D9UnkPiNNHGmM6, zavolejte na 728 683 125 nebo napište na matej.jira@gmail.com."},
   {k:["cena","kolik","stoj","ceník","cenik","rozpočet"],a:"Balíčky: Start 29 900 Kč zavedení + 4 990 Kč/měs, Profi 99 900 + 11 900/měs, Max od 240 000 + od 24 000/měs, a Na míru. Paušál za firmu, ne za uživatele, AI v ceně. Ceny bez DPH. Cenu vždy obhájíme ušetřenými hodinami u vaší firmy."},
   {k:["deník","denik","vyhlášk"],a:"Agent na stavební deník složí denní zápis z fotek a krátké hlasovky: doplní počasí podle GPS, provedené práce, docházku a fotky. Vy ráno odkliknete. U běžných staveb je deník kompletní a obhajitelný; u nadlimitních veřejných zakázek, kde je nutný elektronický podpis, to doplníme ve druhé fázi."},
   {k:["dph","daň","přenes","prenes","zádrž","zadrz"],a:"Fakturační agent navrhne režim DPH včetně přenesené daňové povinnosti u stavebních prací (CZ-CPA 41-43), doplní text „Daň odvede zákazník“ a ohlídá zádržné. Finální kontrolu potvrzuje vaše účetní. Méně chyb a zapomenutého zádržného."},

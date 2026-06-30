@@ -257,6 +257,14 @@
   .benefits b{display:block;font-size:15px;margin-bottom:7px}
   .benefits span{font-size:13px;color:var(--graphite);line-height:1.5}
 
+  /* proof */
+  .proofgrid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);margin-top:40px}
+  .proofnum{padding:28px;border-right:1px solid var(--line)}
+  .proofnum:last-child{border-right:none}
+  .proofnum b{display:block;font-family:var(--mono);font-size:27px;font-weight:700;color:var(--signal)}
+  .proofnum span{font-size:13px;color:var(--graphite);margin-top:6px;display:block;line-height:1.4}
+  .prooflinks{display:flex;gap:14px;margin-top:24px;flex-wrap:wrap}
+
   /* chatbot */
   .cbtn{position:fixed;bottom:26px;right:26px;z-index:80;background:var(--signal);color:var(--paper);border:none;width:60px;height:60px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 40px rgba(245,57,45,.4);transition:transform .2s}
   .cbtn:hover{transform:scale(1.06)}
@@ -293,6 +301,7 @@
     .prices{grid-template-columns:1fr 1fr}.valgrid{grid-template-columns:1fr}
     .calc{grid-template-columns:1fr}.calc-in{border-right:none;border-bottom:1px solid var(--line)}
     .benefits{grid-template-columns:1fr}.benefits .ben{border-right:none;border-bottom:1px solid var(--line)}
+    .proofgrid{grid-template-columns:1fr}.proofnum{border-right:none;border-bottom:1px solid var(--line)}
     .mod:nth-child(2n){border-right:1px solid var(--line)}
     .pain,.wcard{border-right:1px solid var(--line)}
   }
@@ -350,6 +359,26 @@
     <span>Vytěžování dokumentů</span><span>Zápis do CRM</span><span>Detekce rizik s citacemi</span><span>Stavební deník z fotek</span><span>Přenesená DPH</span><span>Výkaz výměr ÚRS a RTS</span><span>Monitoring NEN</span><span>Fakturace a zádržné</span>
   </div>
 </div>
+
+<!-- PROOF -->
+<section id="praxe">
+  <div class="wrap">
+    <div class="head reveal">
+      <div class="eyebrow"><b>Z praxe</b> &nbsp;Reálná nabídka, ne ukázka</div>
+      <h2>Viktor Bainar, zakázky rovnou do CRM</h2>
+      <p class="lead">Konkrétní nabídka, kterou jsme reálně připravili. Vložíte odkaz na zakázku, AI vytáhne data ze smlouvy a zapíše je do Pipedrive, který firma už používá. Podívejte se, jak to vidí majitel i jeho tým.</p>
+    </div>
+    <div class="proofgrid reveal">
+      <div class="proofnum"><b>8 h / týden</b><span>na ručním přepisování, 2 lidé</span></div>
+      <div class="proofnum"><b>~499 000 Kč</b><span>ušetřeno ročně, 832 hodin práce zpět</span></div>
+      <div class="proofnum"><b>200 tis. + 4 tis./měs</b><span>zavedení a provoz</span></div>
+    </div>
+    <div class="prooflinks reveal">
+      <a href="https://nabidky-tau.vercel.app/maitrix/bainar" target="_blank" rel="noopener" class="btn btn-ghost">Jak to vidí majitel →</a>
+      <a href="https://nabidky-tau.vercel.app/maitrix/bainar/tym" target="_blank" rel="noopener" class="btn btn-ghost">Jak to vidí tým →</a>
+    </div>
+  </div>
+</section>
 
 <!-- PROBLEM -->
 <section id="problem">
@@ -619,6 +648,7 @@
     <p class="lead" style="color:var(--ink);opacity:.85">Bezplatná konzultace na 30 minut. Projdeme vaše procesy, vybereme agenty s nejvyšší návratností a domluvíme pilot.</p>
     <div class="hero-cta">
       <a href="mailto:matej.jira@gmail.com" class="btn btn-primary">Domluvit konzultaci →</a>
+      <a href="tel:+420728683125" class="btn btn-ghost">Zavolat 728 683 125</a>
       <button class="btn btn-ghost" onclick="openChat()">Zeptat se asistenta</button>
     </div>
   </div>
@@ -633,6 +663,7 @@
     <div style="text-align:right">
       <div class="mono" style="color:var(--graphite);font-size:13px;margin-bottom:10px">MAITRIX ESCAPE s.r.o. · Praha</div>
       <a href="mailto:matej.jira@gmail.com">matej.jira@gmail.com</a>
+      <div style="margin-top:8px"><a href="tel:+420728683125">+420 728 683 125</a></div>
     </div>
   </div>
 </footer>
@@ -745,6 +776,8 @@ function runCounters(scope){
 var KB=[
   {k:["co ","umí","produkt","na co","k čemu","děl"],a:"MAITRIX Stavby je AI systém pro stavební firmy. Vložíte odkaz na zakázku, AI ji přečte, vytáhne data, označí rizika a založí v CRM. K tomu fakturace s přenesenou DPH, zápis poptávek do CRM a stavební deník z fotek. Celá firma na jednom místě."},
   {k:["crm","plní samo","vyplň","přepis","ručně","raynet"],a:"Naše CRM se plní samo. Agent na poptávky a tendry založí zakázku z odkazu nebo dokumentu, Zapisovač přepíše e-maily, hovory a vizitky rovnou do CRM. Vy jen schválíte jedním klikem. Žádné ruční přepisování, což je hlavní důvod, proč CRM ve firmách jinde nefungují. U veřejných zakázek navíc ohlídáme lhůty a kvalifikaci."},
+  {k:["referenc","kdo to používá","kdo používá","kdo to ma","case","bainar","zlín","zlin","ukázka","ukazka","demo","příklad","priklad"],a:"Reálný příklad: pro Viktora Bainara jsme připravili nasazení, kde AI vytáhne data ze smluv a zapíše je do Pipedrive. U firmy, kde 2 lidé trávili 8 hodin týdně přepisováním, to vrací zhruba 832 hodin a kolem 499 000 Kč ročně. Na stránce máte odkaz, jak to vidí majitel i tým."},
+  {k:["jak začít","zacit","začít","první krok","prvni krok","jak to rozjet","začneme"],a:"Začneme krátkou bezplatnou konzultací (30 minut), projdeme vaše procesy a vybereme agenty s nejvyšší návratností. Pak pilot u jedné firmy, kde od prvního dne měříme ušetřené hodiny. Zavolejte na 728 683 125 nebo napište na matej.jira@gmail.com."},
   {k:["cena","kolik","stoj","ceník","cenik","rozpočet"],a:"Balíčky: Start 29 900 Kč zavedení + 4 990 Kč/měs, Profi 99 900 + 11 900/měs, Max od 240 000 + od 24 000/měs, a Na míru. Paušál za firmu, ne za uživatele, AI v ceně. Ceny bez DPH. Cenu vždy obhájíme ušetřenými hodinami u vaší firmy."},
   {k:["deník","denik","vyhlášk"],a:"Agent na stavební deník složí denní zápis z fotek a krátké hlasovky: doplní počasí podle GPS, provedené práce, docházku a fotky. Vy ráno odkliknete. U běžných staveb je deník kompletní a obhajitelný; u nadlimitních veřejných zakázek, kde je nutný elektronický podpis, to doplníme ve druhé fázi."},
   {k:["dph","daň","přenes","prenes","zádrž","zadrz"],a:"Fakturační agent navrhne režim DPH včetně přenesené daňové povinnosti u stavebních prací (CZ-CPA 41-43), doplní text „Daň odvede zákazník“ a ohlídá zádržné. Finální kontrolu potvrzuje vaše účetní. Méně chyb a zapomenutého zádržného."},
@@ -766,7 +799,8 @@ function renderChips(){cchips.innerHTML='';CHIPS.forEach(function(q){var b=docum
 function add(cls,txt){var d=document.createElement('div');d.className='msg '+cls;d.textContent=txt;cbody.appendChild(d);cbody.scrollTop=cbody.scrollHeight;return d;}
 function botSay(txt){add('bot',txt)}
 function think(cb){var t=document.createElement('div');t.className='typing';t.innerHTML='<i></i><i></i><i></i>';cbody.appendChild(t);cbody.scrollTop=cbody.scrollHeight;setTimeout(function(){t.remove();cb()},600+Math.random()*500)}
-function answer(q){var s=q.toLowerCase();var best=null;for(var i=0;i<KB.length;i++){for(var j=0;j<KB[i].k.length;j++){if(s.indexOf(KB[i].k[j])>-1){best=KB[i].a;break}}if(best)break}return best||"Dobrá otázka. Tohle nejlíp probereme na bezplatné konzultaci, napište na matej.jira@gmail.com a ozvu se. Mezitím se můžete zeptat na cenu, nasazení, stavební deník, přenesenou DPH nebo integrace.";}
+function norm(x){return x.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')}
+function answer(q){var s=norm(q);var best=null;for(var i=0;i<KB.length;i++){for(var j=0;j<KB[i].k.length;j++){if(s.indexOf(norm(KB[i].k[j]))>-1){best=KB[i].a;break}}if(best)break}return best||"Na tohle vám nejlíp odpovíme osobně. Zavolejte na 728 683 125 nebo napište na matej.jira@gmail.com. Můžete se taky zeptat na cenu, nasazení, veřejné zakázky, stavební deník, přenesenou DPH, bezpečnost nebo integrace.";}
 function ask(q){add('me',q);cchips.innerHTML='';think(function(){botSay(answer(q));renderChips()})}
 function sendChat(){var v=cinput.value.trim();if(!v)return;cinput.value='';ask(v)}
 

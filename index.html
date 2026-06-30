@@ -276,6 +276,8 @@
   .proofnum b{display:block;font-family:var(--mono);font-size:27px;font-weight:700;color:var(--signal)}
   .proofnum span{font-size:13px;color:var(--graphite);margin-top:6px;display:block;line-height:1.4}
   .prooflinks{display:flex;gap:14px;margin-top:24px;flex-wrap:wrap}
+  .csquote{margin:36px 0 0;font-size:22px;line-height:1.5;letter-spacing:-.01em;color:var(--ink);max-width:760px;border-left:2px solid var(--signal);padding-left:24px}
+  .csquote cite{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--graphite);font-style:normal;margin-top:14px}
 
   /* chatbot */
   .cbtn{position:fixed;bottom:26px;right:26px;z-index:80;background:var(--signal);color:var(--paper);border:none;width:60px;height:60px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 40px rgba(245,57,45,.4);transition:transform .2s}
@@ -377,19 +379,16 @@
 <section id="praxe">
   <div class="wrap">
     <div class="head reveal">
-      <div class="eyebrow"><b>Z praxe</b> &nbsp;Reálná nabídka, ne ukázka</div>
-      <h2>Viktor Bainar, zakázky rovnou do CRM</h2>
-      <p class="lead">Konkrétní nabídka, kterou jsme reálně připravili. Vložíte odkaz na zakázku, AI vytáhne data ze smlouvy a zapíše je do Pipedrive, který firma už používá. Podívejte se, jak to vidí majitel i jeho tým.</p>
+      <div class="eyebrow"><b>Případová studie</b> &nbsp;Stavební firma, ~50 lidí</div>
+      <h2>Zakázky rovnou do CRM, bez přepisování</h2>
+      <p class="lead">Příprava a back-office trávili desítky hodin týdně přepisováním dat ze smluv, zadávacích dokumentací a faktur. Agent teď data vytáhne, označí rizika a po schválení zapíše do CRM, který firma už používá. Lidé jen kontrolují.</p>
     </div>
     <div class="proofgrid reveal">
-      <div class="proofnum"><b>8 h / týden</b><span>na ručním přepisování, 2 lidé</span></div>
-      <div class="proofnum"><b>~499 000 Kč</b><span>ušetřeno ročně, 832 hodin práce zpět</span></div>
-      <div class="proofnum"><b>200 tis. + 4 tis./měs</b><span>zavedení a provoz</span></div>
+      <div class="proofnum"><b>32 h / týden</b><span>dřív na ručním přepisování, příprava a back-office</span></div>
+      <div class="proofnum"><b>~830 000 Kč</b><span>ušetřeno ročně, přes 1 600 hodin práce zpět</span></div>
+      <div class="proofnum"><b>~9 měsíců</b><span>návratnost při ceně 500 000 Kč zavedení a 10 000 Kč/měs</span></div>
     </div>
-    <div class="prooflinks reveal">
-      <a href="https://nabidky-tau.vercel.app/maitrix/bainar" target="_blank" rel="noopener" class="btn btn-ghost">Jak to vidí majitel →</a>
-      <a href="https://nabidky-tau.vercel.app/maitrix/bainar/tym" target="_blank" rel="noopener" class="btn btn-ghost">Jak to vidí tým →</a>
-    </div>
+    <blockquote class="csquote reveal">„Lidi konečně dělají na zakázkách, ne v Excelu. A jako majitel mám přehled o všech zakázkách na jednom místě.“<cite>majitel firmy</cite></blockquote>
   </div>
 </section>
 
@@ -815,7 +814,7 @@ function runCounters(scope){
 var KB=[
   {k:["co ","umí","produkt","na co","k čemu","děl"],a:"MAITRIX Stavby je AI systém pro stavební firmy. Vložíte odkaz na zakázku, AI ji přečte, vytáhne data, označí rizika a založí v CRM. K tomu fakturace s přenesenou DPH, zápis poptávek do CRM a stavební deník z fotek. Celá firma na jednom místě."},
   {k:["crm","plní samo","vyplň","přepis","ručně","raynet"],a:"Naše CRM se plní samo. Agent na poptávky a tendry založí zakázku z odkazu nebo dokumentu, Zapisovač přepíše e-maily, hovory a vizitky rovnou do CRM. Vy jen schválíte jedním klikem. Žádné ruční přepisování, což je hlavní důvod, proč CRM ve firmách jinde nefungují. U veřejných zakázek navíc ohlídáme lhůty a kvalifikaci."},
-  {k:["referenc","kdo to používá","kdo používá","kdo to ma","case","bainar","zlín","zlin","ukázka","ukazka","demo","příklad","priklad"],a:"Reálný příklad: pro Viktora Bainara jsme připravili nasazení, kde AI vytáhne data ze smluv a zapíše je do Pipedrive. U firmy, kde 2 lidé trávili 8 hodin týdně přepisováním, to vrací zhruba 832 hodin a kolem 499 000 Kč ročně. Na stránce máte odkaz, jak to vidí majitel i tým."},
+  {k:["referenc","kdo to používá","kdo používá","kdo to ma","case","případov","pripadov","ukázka","ukazka","demo","příklad","priklad","studie"],a:"Příklad z praxe: u stavební firmy (~50 lidí), kde příprava a back-office trávily desítky hodin týdně přepisováním, agent zapisuje zakázky do CRM sám. Vrací přes 1 600 hodin a kolem 830 000 Kč ročně, návratnost zhruba 9 měsíců. Detaily najdete v sekci Případová studie."},
   {k:["jak začít","zacit","začít","první krok","prvni krok","jak to rozjet","začneme"],a:"Začneme krátkou bezplatnou konzultací (30 minut), projdeme vaše procesy a vybereme agenty s nejvyšší návratností. Pak pilot u jedné firmy, kde od prvního dne měříme ušetřené hodiny. Rezervujte si termín na https://calendar.app.google/ng9D9UnkPiNNHGmM6, zavolejte na 728 683 125 nebo napište na matej.jira@gmail.com."},
   {k:["cena","kolik","stoj","ceník","cenik","rozpočet"],a:"Balíčky: Start 29 900 Kč zavedení + 4 990 Kč/měs, Profi 99 900 + 11 900/měs, Max od 240 000 + od 24 000/měs, a Na míru. Paušál za firmu, ne za uživatele, AI v ceně. Ceny bez DPH. Cenu vždy obhájíme ušetřenými hodinami u vaší firmy."},
   {k:["deník","denik","vyhlášk"],a:"Agent na stavební deník složí denní zápis z fotek a krátké hlasovky: doplní počasí podle GPS, provedené práce, docházku a fotky. Vy ráno odkliknete. U běžných staveb je deník kompletní a obhajitelný; u nadlimitních veřejných zakázek, kde je nutný elektronický podpis, to doplníme ve druhé fázi."},

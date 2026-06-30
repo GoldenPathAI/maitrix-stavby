@@ -5,6 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>[MAITRIX] Stavařina - AI agenti pro stavební firmy</title>
 <meta name="description" content="AI agenti pro stavební firmy. Od odkazu na zakázku po fakturu. Vytěžování dokumentů, CRM, stavební deník a fakturace, česky a podle českých pravidel." />
+<link rel="canonical" href="https://goldenpathai.github.io/maitrix-stavby/" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2309090b'/%3E%3Ctext x='16' y='23' font-family='monospace' font-size='20' font-weight='bold' fill='%23f5392d' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E" />
+<meta name="theme-color" content="#09090b" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="cs_CZ" />
+<meta property="og:site_name" content="MAITRIX Stavařina" />
+<meta property="og:title" content="MAITRIX Stavařina - CRM, které se plní samo" />
+<meta property="og:description" content="AI agenti pro stavební firmy. Poptávky i veřejné zakázky se do CRM zapíšou samy, k tomu fakturace a stavební deník. Česky a podle českých pravidel." />
+<meta property="og:url" content="https://goldenpathai.github.io/maitrix-stavby/" />
+<meta property="og:image" content="https://goldenpathai.github.io/maitrix-stavby/og.svg" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="MAITRIX Stavařina - CRM, které se plní samo" />
+<meta name="twitter:description" content="AI agenti pro stavební firmy. Poptávky i veřejné zakázky se do CRM zapíšou samy." />
+<meta name="twitter:image" content="https://goldenpathai.github.io/maitrix-stavby/og.svg" />
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"MAITRIX ESCAPE s.r.o.","alternateName":"MAITRIX Stavařina","url":"https://goldenpathai.github.io/maitrix-stavby/","email":"matej.jira@gmail.com","description":"AI agenti pro stavební firmy. Vytěžování dokumentů, CRM, stavební deník a fakturace.","areaServed":"CZ","address":{"@type":"PostalAddress","addressLocality":"Praha","addressCountry":"CZ"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -302,13 +317,13 @@
       <a href="#cenik">Ceník</a>
       <a href="#kontakt" class="btn btn-primary">Konzultace</a>
     </nav>
-    <button class="menu-btn" onclick="var n=document.querySelector('.navlinks');n.style.display=n.style.display==='flex'?'none':'flex';n.style.position='absolute';n.style.flexDirection='column';n.style.top='62px';n.style.right='28px';n.style.background='var(--bg2)';n.style.padding='16px 20px';n.style.border='1px solid var(--line)'">≡</button>
+    <button class="menu-btn" aria-label="Otevřít menu" onclick="var n=document.querySelector('.navlinks');n.style.display=n.style.display==='flex'?'none':'flex';n.style.position='absolute';n.style.flexDirection='column';n.style.top='62px';n.style.right='28px';n.style.background='var(--bg2)';n.style.padding='16px 20px';n.style.border='1px solid var(--line)'">≡</button>
   </div>
 </header>
 
 <!-- HERO -->
 <section class="hero">
-  <canvas id="shader"></canvas>
+  <canvas id="shader" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="hero-grid">
       <div>
@@ -644,6 +659,7 @@
 /* ---------- WebGL shader background (Matrix red rain + plasma, z maitrix.cz) ---------- */
 (function(){
   var c=document.getElementById('shader');if(!c)return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches||window.innerWidth<760){c.style.background='radial-gradient(circle at 70% 20%,rgba(245,57,45,.12),#09090b 60%)';return;}
   var gl=c.getContext('webgl')||c.getContext('experimental-webgl');
   if(!gl){c.style.background='radial-gradient(circle at 70% 20%,rgba(245,57,45,.12),#09090b 60%)';return;}
   var VS="attribute vec2 a_pos;void main(){gl_Position=vec4(a_pos,0.0,1.0);}";
